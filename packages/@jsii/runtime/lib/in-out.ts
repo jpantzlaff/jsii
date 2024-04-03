@@ -64,6 +64,10 @@ export class InputOutput implements IInputOutput {
       reqLine = reqLine.slice(2);
     }
 
+    if (reqLine.includes('Infinity')) {
+      reqLine = reqLine.replace(/(?<!")Infinity(?!")/g, '1e10000');
+    }
+
     const input = JSON.parse(reqLine);
 
     if (this.debug) {
