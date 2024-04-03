@@ -4,6 +4,7 @@ import datetime
 import contextlib
 import enum
 import json
+import numbers
 import os
 import os.path
 import pathlib
@@ -136,12 +137,28 @@ def ohook(d):
         return EnumRef(ref=ObjRef(ref=ref + "@"), member=member)
     if d.keys() == {"$jsii.map"}:
         return d["$jsii.map"]
+    if d.keys() == {"$jsii.number"}:
+        if d["$jsii.number"] == "Infinity":
+            return float("inf")
+        if d["$jsii.number"] == "-Infinity":
+            return float("-inf")
+        if d["$jsii.number"] == "NaN":
+            return float("nan")
+        return float(d["$jsii.number"])
     return d
 
 
 def jdefault(obj):
     if hasattr(obj, "__jsii_ref__"):
         return _unstructure_ref(obj.__jsii_ref__)
+    if isinstance(obj, numbers.Number):
+        if obj == float("inf"):
+            return {"$jsii.number": "Infinity"}
+        if obj == float("-inf"):
+            return {"$jsii.number": "-Infinity"}
+        if obj == float("nan"):
+            return {"$jsii.number": "NaN"}
+        return {"$jsii.number": str(obj)}
     if isinstance(obj, datetime.datetime) and obj.tzinfo is not None:
         return {"$jsii.date": obj.isoformat()}
     elif isinstance(obj, datetime.datetime):
