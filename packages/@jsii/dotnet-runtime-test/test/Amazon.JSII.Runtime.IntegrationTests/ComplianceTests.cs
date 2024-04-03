@@ -248,6 +248,22 @@ namespace Amazon.JSII.Runtime.IntegrationTests
             Assert.Equal(1d, new Power(new Number(999), new Number(0)).Value);
         }
 
+        [Fact(DisplayName = Prefix + nameof(GetSetInfinity))]
+        public void GetSetInfinity()
+        {
+            var number = new Number(double.PositiveInfinity);
+            Assert.Equal(double.PositiveInfinity, number.Value);
+            Assert.Equal(double.PositiveInfinity, number.DoubleValue);
+        }
+
+        [Fact(DisplayName = Prefix + nameof(GetSetNan))]
+        public void GetSetNan()
+        {
+            var number = new Number(double.NaN);
+            Assert.Equal(null, number.Value);
+            Assert.Equal(null, number.DoubleValue);
+        }
+
         [Fact(DisplayName = Prefix + nameof(CallMethods))]
         public void CallMethods()
         {
