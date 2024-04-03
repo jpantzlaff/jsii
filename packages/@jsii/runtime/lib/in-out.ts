@@ -68,6 +68,10 @@ export class InputOutput implements IInputOutput {
       reqLine = reqLine.replace(/(?<!")Infinity(?!")/g, '1e10000');
     }
 
+    if (reqLine.includes('NaN')) {
+      reqLine = reqLine.replace(/(?<!")NaN(?!")/g, 'null');
+    }
+
     const input = JSON.parse(reqLine);
 
     if (this.debug) {
