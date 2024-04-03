@@ -40,7 +40,21 @@ export class InputOutput implements IInputOutput {
   public constructor(private readonly stdio: SyncStdio) {}
 
   public write(obj: Output) {
-    const output = JSON.stringify(obj);
+    let includesInfinity = false;
+
+    let output = JSON.stringify(obj, (_, value) => {
+      if (value === Infinity) {
+        includesInfinity = true;
+        return '@@infinity';
+      }
+
+      return value;
+    });
+
+    if (includesInfinity) {
+      output = output.replace(/"@@infinity"/g, '1e10000');
+    }
+
     this.stdio.writeLine(output);
 
     if (this.debug) {
