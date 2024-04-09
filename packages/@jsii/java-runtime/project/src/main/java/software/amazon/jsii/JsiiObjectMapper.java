@@ -70,6 +70,8 @@ public final class JsiiObjectMapper {
 
   private static final String TOKEN_MAP = "$jsii.map";
 
+  private static final String TOKEN_NUMBER = "$jsii.number";
+
   private final ObjectMapper objectMapper;
 
   @Nullable
@@ -90,6 +92,7 @@ public final class JsiiObjectMapper {
     module.setSerializers(new JsiiSerializers());
     module.addSerializer(Enum.class, new EnumSerializer());
     module.addSerializer(Instant.class, new InstantSerializer());
+    module.addSerializer(Double.class, new NumberSerializer());
     module.addSerializer(JsiiSerializable.class, new JsiiSerializer());
 
     this.objectMapper.findAndRegisterModules();
@@ -130,6 +133,9 @@ public final class JsiiObjectMapper {
       final JsonNode node = p.readValueAsTree();
 
       if (node.isObject()) {
+        if (node.has(TOKEN_NUMBER)) {
+          return Double.parseDouble(node.get(TOKEN_NUMBER).textValue());
+        }
         if (node.has(TOKEN_DATE)) {
           return Instant.parse(node.get(TOKEN_DATE).textValue());
         }
@@ -255,6 +261,18 @@ public final class JsiiObjectMapper {
     public void serialize(final Instant value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
       gen.writeStartObject();
       gen.writeStringField(TOKEN_DATE, value.toString());
+      gen.writeEndObject();
+    }
+  }
+
+  /**
+   * Serializer for Numbers.
+   */
+  private static final class NumberSerializer extends JsonSerializer<Double> {
+    @Override
+    public void serialize(final Double value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
+      gen.writeStartObject();
+      gen.writeStringField(TOKEN_NUMBER, Double.toString(value));
       gen.writeEndObject();
     }
   }
