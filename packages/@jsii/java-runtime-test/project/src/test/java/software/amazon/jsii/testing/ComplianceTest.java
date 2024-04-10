@@ -208,6 +208,27 @@ public class ComplianceTest {
     }
 
     @Test
+    public void getSetPositiveInfinity() {
+        Number number = new Number(Double.POSITIVE_INFINITY);
+        assertEquals(Double.POSITIVE_INFINITY, number.getValue());
+        assertEquals(Double.POSITIVE_INFINITY, number.getDoubleValue());
+    }
+
+    @Test
+    public void getSetNegativeInfinity() {
+        Number number = new Number(Double.NEGATIVE_INFINITY);
+        assertEquals(Double.NEGATIVE_INFINITY, number.getValue());
+        assertEquals(Double.NEGATIVE_INFINITY, number.getDoubleValue());
+    }
+
+    @Test
+    public void getSetNan() {
+        Number number = new Number(Double.NaN);
+        assertEquals(Double.NaN, number.getValue());
+        assertEquals(Double.NaN, number.getDoubleValue());
+    }
+
+    @Test
     public void callMethods() {
         Calculator calc = new Calculator();
         calc.add(10); assertEquals(10, calc.getValue());
