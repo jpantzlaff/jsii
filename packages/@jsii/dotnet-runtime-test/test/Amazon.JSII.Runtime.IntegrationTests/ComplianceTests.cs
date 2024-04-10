@@ -248,6 +248,30 @@ namespace Amazon.JSII.Runtime.IntegrationTests
             Assert.Equal(1d, new Power(new Number(999), new Number(0)).Value);
         }
 
+        [Fact(DisplayName = Prefix + nameof(GetSetPositiveInfinity))]
+        public void GetSetPositiveInfinity()
+        {
+            var number = new Number(double.PositiveInfinity);
+            Assert.Equal(double.PositiveInfinity, number.Value);
+            Assert.Equal(double.PositiveInfinity, number.DoubleValue);
+        }
+
+        [Fact(DisplayName = Prefix + nameof(GetSetNegativeInfinity))]
+        public void GetSetNegativeInfinity()
+        {
+            var number = new Number(double.NegativeInfinity);
+            Assert.Equal(double.NegativeInfinity, number.Value);
+            Assert.Equal(double.NegativeInfinity, number.DoubleValue);
+        }
+
+        [Fact(DisplayName = Prefix + nameof(GetSetNan))]
+        public void GetSetNan()
+        {
+            var number = new Number(double.NaN);
+            Assert.Equal(double.NaN, number.Value);
+            Assert.Equal(double.NaN, number.DoubleValue);
+        }
+
         [Fact(DisplayName = Prefix + nameof(CallMethods))]
         public void CallMethods()
         {
