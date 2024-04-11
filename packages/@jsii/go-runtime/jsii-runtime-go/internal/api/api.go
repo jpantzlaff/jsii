@@ -91,6 +91,10 @@ type WireMap struct {
 	MapData map[string]interface{} `json:"$jsii.map"`
 }
 
+type WireNumber struct {
+	Number string `json:"$jsii.number"`
+}
+
 type WireStruct struct {
 	StructDescriptor `json:"$jsii.struct"`
 }

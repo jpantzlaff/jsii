@@ -348,6 +348,30 @@ def test_getSetPrimitiveProperties():
     assert Power(Number(999), Number(0)).value == 1
 
 
+def test_getSetPositiveInfinity():
+    inf = float("inf")
+    number = Number(inf)
+
+    assert number.value == inf
+    assert number.double_value == inf
+
+
+def test_getSetNegativeInfinity():
+    ninf = float("-inf")
+    number = Number(ninf)
+
+    assert number.value == ninf
+    assert number.double_value == ninf
+
+
+def test_getSetNan():
+    nan = float("nan")
+    number = Number(nan)
+
+    assert number.value == nan
+    assert number.double_value == nan
+
+
 def test_callMethods():
     calc = Calculator()
 

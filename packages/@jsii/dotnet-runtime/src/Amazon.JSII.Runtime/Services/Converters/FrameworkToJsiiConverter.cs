@@ -188,7 +188,8 @@ namespace Amazon.JSII.Runtime.Services.Converters
 
             if (IsNumeric(value.GetType()))
             {
-                result = Convert.ToDouble(value, CultureInfo.InvariantCulture);
+                double number = Convert.ToDouble(value, CultureInfo.InvariantCulture);
+                result = JObject.FromObject(new NumberValue(number));
                 return true;
             }
 

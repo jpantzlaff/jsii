@@ -1083,6 +1083,33 @@ func (suite *ComplianceSuite) TestGetSetPrimitiveProperties() {
 	require.Equal(t, 1.0, *calc.NewPower(calclib.NewNumber(jsii.Number(999)), calclib.NewNumber(jsii.Number(0))).Value())
 }
 
+func (suite *ComplianceSuite) TestGetSetPositiveInfinity() {
+	inf := math.Inf(1)
+	t := suite.T()
+
+	number := calclib.NewNumber(jsii.Number(inf))
+	require.True(t, math.IsInf(*number.Value(), 1))
+	require.True(t, math.IsInf(*number.DoubleValue(), 1))
+}
+
+func (suite *ComplianceSuite) TestGetSetNegativeInfinity() {
+	ninf := math.Inf(-1)
+	t := suite.T()
+
+	number := calclib.NewNumber(jsii.Number(ninf))
+	require.True(t, math.IsInf(*number.Value(), -1))
+	require.True(t, math.IsInf(*number.DoubleValue(), -1))
+}
+
+func (suite *ComplianceSuite) TestGetSetNan() {
+	nan := math.NaN()
+	t := suite.T()
+
+	number := calclib.NewNumber(jsii.Number(nan))
+	require.True(t, math.IsNaN(*number.Value()))
+	require.True(t, math.IsNaN(*number.DoubleValue()))
+}
+
 func (suite *ComplianceSuite) TestGetAndSetNonPrimitiveProperties() {
 	t := suite.T()
 

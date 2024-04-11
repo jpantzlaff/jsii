@@ -145,9 +145,9 @@ namespace Amazon.JSII.Runtime.Services.Converters
                 return isOptional;
             }
 
-            if (IsNumeric(value.GetType()))
+            if (value is JObject jsonValue && jsonValue.ContainsKey("$jsii.number"))
             {
-                result = Convert.ToDouble(value, CultureInfo.InvariantCulture);
+                result = jsonValue.ToObject<NumberValue>()!.Number;
                 return true;
             }
 

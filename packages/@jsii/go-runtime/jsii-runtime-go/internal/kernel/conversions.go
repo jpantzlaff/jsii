@@ -2,7 +2,9 @@ package kernel
 
 import (
 	"fmt"
+	"math"
 	"reflect"
+	"strconv"
 	"time"
 
 	"github.com/aws/jsii-runtime-go/internal/api"
@@ -87,6 +89,11 @@ func (c *Client) castAndSetToPtr(ptr reflect.Value, data reflect.Value) {
 		return
 	}
 
+	if number, isNumber := castValToNumber(data); isNumber {
+		ptr.Set(reflect.ValueOf(number))
+		return
+	}
+
 	if enumref, isEnum := castValToEnumRef(data); isEnum {
 		member, err := c.Types().EnumMemberForEnumRef(enumref)
 		if err != nil {
@@ -142,6 +149,10 @@ func (c *Client) CastPtrToRef(dataVal reflect.Value) interface{} {
 	}
 	if (dataVal.Kind() == reflect.Interface || dataVal.Kind() == reflect.Ptr) && dataVal.IsNil() {
 		return nil
+	}
+
+	if wireNumber, isNumber := castPtrToNumber(dataVal); isNumber {
+		return wireNumber
 	}
 
 	// In case we got a time.Time value (or pointer to one).
@@ -242,6 +253,28 @@ func castPtrToDate(data reflect.Value) (wireDate api.WireDate, ok bool) {
 	return
 }
 
+func castPtrToNumber(data reflect.Value) (wireNumber api.WireNumber, ok bool) {
+	var number *float64
+	if number, ok = data.Interface().(*float64); !ok {
+		var val float64
+		if val, ok = data.Interface().(float64); ok {
+			number = &val
+		}
+	}
+	if ok {
+		if math.IsInf(*number, 1) {
+			wireNumber.Number = "Infinity"
+		} else if math.IsInf(*number, -1) {
+			wireNumber.Number = "-Infinity"
+		} else if math.IsNaN(*number) {
+			wireNumber.Number = "NaN"
+		} else {
+			wireNumber.Number = strconv.FormatFloat(*number, 'f', -1, 64)
+		}
+	}
+	return
+}
+
 func castValToRef(data reflect.Value) (ref api.ObjectRef, ok bool) {
 	if data.Kind() == reflect.Map {
 		for _, k := range data.MapKeys() {
@@ -291,6 +324,22 @@ func castValToDate(data reflect.Value) (date time.Time, ok bool) {
 			if k.Kind() == reflect.String && k.String() == "$jsii.date" && v.Kind() == reflect.String {
 				var err error
 				date, err = time.Parse(time.RFC3339Nano, v.String())
+				ok = (err == nil)
+				break
+			}
+		}
+	}
+
+	return
+}
+
+func castValToNumber(data reflect.Value) (number float64, ok bool) {
+	if data.Kind() == reflect.Map {
+		for _, k := range data.MapKeys() {
+			v := reflect.ValueOf(data.MapIndex(k).Interface())
+			if k.Kind() == reflect.String && k.String() == "$jsii.number" && v.Kind() == reflect.String {
+				var err error
+				number, err = strconv.ParseFloat(v.String(), 64)
 				ok = (err == nil)
 				break
 			}
